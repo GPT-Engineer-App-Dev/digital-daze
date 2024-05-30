@@ -1,7 +1,25 @@
-import { Box, Container, VStack, Text, Image, Flex, Heading, Button, Link, HStack, IconButton } from "@chakra-ui/react";
+import { useState, useEffect } from "react";
+import { Box, Container, VStack, Text, Image, Flex, Heading, Button, Link, HStack, IconButton, Input } from "@chakra-ui/react";
 import { FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa";
 
 const Index = () => {
+  const products = [
+    { id: 1, name: "Product 1", price: "$199.99", image: "/images/product1.jpg" },
+    { id: 2, name: "Product 2", price: "$299.99", image: "/images/product2.jpg" },
+    { id: 3, name: "Product 3", price: "$399.99", image: "/images/product3.jpg" },
+  ];
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredProducts, setFilteredProducts] = useState(products);
+
+  useEffect(() => {
+    setFilteredProducts(
+      products.filter(product =>
+        product.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    );
+  }, [searchQuery]);
+
   return (
     <Box>
       {/* Navigation Bar */}
@@ -14,6 +32,15 @@ const Index = () => {
             <Link href="#" color="white">About</Link>
             <Link href="#" color="white">Contact</Link>
           </HStack>
+          <Input
+            placeholder="Search products..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            width="200px"
+            ml={4}
+            bg="white"
+            color="black"
+          />
         </Container>
       </Box>
 
@@ -31,21 +58,13 @@ const Index = () => {
         <Container maxW="container.lg">
           <Heading as="h3" size="lg" mb={10} textAlign="center">Featured Products</Heading>
           <Flex wrap="wrap" justify="space-around">
-            <VStack spacing={4} mb={8} width="200px">
-              <Image src="/images/product1.jpg" alt="Product 1" boxSize="200px" objectFit="cover" />
-              <Text fontWeight="bold">Product 1</Text>
-              <Text>$199.99</Text>
-            </VStack>
-            <VStack spacing={4} mb={8} width="200px">
-              <Image src="/images/product2.jpg" alt="Product 2" boxSize="200px" objectFit="cover" />
-              <Text fontWeight="bold">Product 2</Text>
-              <Text>$299.99</Text>
-            </VStack>
-            <VStack spacing={4} mb={8} width="200px">
-              <Image src="/images/product3.jpg" alt="Product 3" boxSize="200px" objectFit="cover" />
-              <Text fontWeight="bold">Product 3</Text>
-              <Text>$399.99</Text>
-            </VStack>
+            {filteredProducts.map(product => (
+              <VStack key={product.id} spacing={4} mb={8} width="200px">
+                <Image src={product.image} alt={product.name} boxSize="200px" objectFit="cover" />
+                <Text fontWeight="bold">{product.name}</Text>
+                <Text>{product.price}</Text>
+              </VStack>
+            ))}
           </Flex>
         </Container>
       </Box>
